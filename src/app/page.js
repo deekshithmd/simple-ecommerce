@@ -1,113 +1,121 @@
-import Image from 'next/image'
+"use client";
+import Image from "next/image";
+import Script from "next/script";
+import emailjs from "@emailjs/browser";
+import Mobile1 from "../../public/mobile-1.png";
+import Mobile2 from "../../public/mobile-2.png";
+import Mobile3 from "../../public/mobile-3.png";
 
 export default function Home() {
+  const products = [
+    {
+      id: 1,
+      name: "Mobile1",
+      image: Mobile1,
+      price: 10000,
+    },
+    {
+      id: 2,
+      name: "Mobile2",
+      image: Mobile2,
+      price: 12000,
+    },
+    {
+      id: 3,
+      name: "Mobile3",
+      image: Mobile3,
+      price: 15000,
+    },
+  ];
+
+  const sendBill = (item) => {
+    const templateParams = {
+      from_name: "SimpleEcom",
+      to_name: "Deekshith M D",
+      product_name: "Mobile1",
+      bill_description: `You have purchased ${item?.name} worth Rs.${item?.price}, ${item?.name} comes under 6 month warrenty`,
+      to_email: "deekshith123@mailinator.com", // user email
+      price: 10000,
+    };
+
+    emailjs
+      .send(
+        "service_bwfwfjb",
+        "template_2knrhm3",
+        templateParams,
+        "VXfq7H_2G3ps184-E"
+      )
+      .then(
+        (response) => {
+          console.log("SUCCESS!", response.status, response.text);
+        },
+        (err) => {
+          console.log("FAILED...", err);
+        }
+      );
+  };
+
+  const doPayment = (item) => {
+    let options = {
+      key: "rzp_test_FKsgyFO1LyEuxU",
+      key_secret: "B5IjUO1TmcjmfDw34KMI4f8X",
+      amount: item?.price * 100,
+      currency: "INR",
+      name: "SimpleEcom",
+      description: "Thank you for choosing FreshBuy",
+      handler: function (response) {
+        console.log("id", response);
+        sendBill(item);
+        console.log("Congratulations...Your Order Placed");
+      },
+      prefill: {
+        name: "Deekshith M D",
+        email: "deekshithmogra@gmail.com",
+        contact: "7975507889",
+      },
+      notes: {
+        address: "Razorpay Carporate Office",
+      },
+      theme: {
+        color: "#0bb32f",
+      },
+    };
+    let pay = new window.Razorpay(options);
+    pay.open();
+  };
+
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <div className="z-10 max-w-5xl w-full items-center justify-between font-mono text-sm lg:flex">
-        <p className="fixed left-0 top-0 flex w-full justify-center border-b border-gray-300 bg-gradient-to-b from-zinc-200 pb-6 pt-8 backdrop-blur-2xl dark:border-neutral-800 dark:bg-zinc-800/30 dark:from-inherit lg:static lg:w-auto  lg:rounded-xl lg:border lg:bg-gray-200 lg:p-4 lg:dark:bg-zinc-800/30">
-          Get started by editing&nbsp;
-          <code className="font-mono font-bold">src/app/page.js</code>
-        </p>
-        <div className="fixed bottom-0 left-0 flex h-48 w-full items-end justify-center bg-gradient-to-t from-white via-white dark:from-black dark:via-black lg:static lg:h-auto lg:w-auto lg:bg-none">
-          <a
-            className="pointer-events-none flex place-items-center gap-2 p-8 lg:pointer-events-auto lg:p-0"
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className="dark:invert"
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
-
-      <div className="relative flex place-items-center before:absolute before:h-[300px] before:w-[480px] before:-translate-x-1/2 before:rounded-full before:bg-gradient-radial before:from-white before:to-transparent before:blur-2xl before:content-[''] after:absolute after:-z-20 after:h-[180px] after:w-[240px] after:translate-x-1/3 after:bg-gradient-conic after:from-sky-200 after:via-blue-200 after:blur-2xl after:content-[''] before:dark:bg-gradient-to-br before:dark:from-transparent before:dark:to-blue-700 before:dark:opacity-10 after:dark:from-sky-900 after:dark:via-[#0141ff] after:dark:opacity-40 before:lg:h-[360px] z-[-1]">
-        <Image
-          className="relative dark:drop-shadow-[0_0_0.3rem_#ffffff70] dark:invert"
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-      </div>
-
-      <div className="mb-32 grid text-center lg:max-w-5xl lg:w-full lg:mb-0 lg:grid-cols-4 lg:text-left">
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Docs{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800 hover:dark:bg-opacity-30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Learn{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Learn about Next.js in an interactive course with&nbsp;quizzes!
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Templates{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Explore starter templates for Next.js.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className="group rounded-lg border border-transparent px-5 py-4 transition-colors hover:border-gray-300 hover:bg-gray-100 hover:dark:border-neutral-700 hover:dark:bg-neutral-800/30"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={`mb-3 text-2xl font-semibold`}>
-            Deploy{' '}
-            <span className="inline-block transition-transform group-hover:translate-x-1 motion-reduce:transform-none">
-              -&gt;
-            </span>
-          </h2>
-          <p className={`m-0 max-w-[30ch] text-sm opacity-50`}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+    <>
+      <Script
+        src="https://checkout.razorpay.com/v1/checkout.js"
+        onError={() => console.log("Error in script")}
+        onReady={() => console.log("script is ready")}
+      />
+      <main className="w-full min-h-screen flex items-center justify-center p-24 gap-2">
+        {products?.map((item) => {
+          return (
+            <div
+              key={item?.id}
+              className="border-2 bg-white hover:scale-105 hover:transition-transform border-black rounded-lg flex flex-col justify-center items-center p-5 gap-y-2"
+            >
+              <Image
+                src={item?.image}
+                height={70}
+                width={50}
+                alt="product"
+                className="h-52 w-52 object-contain"
+              />
+              <span>{`Price: Rs.${item?.price}`}</span>
+              <button
+                className="border px-8 py-1 rounded-full bg-blue-600 text-white hover:bg-blue-700"
+                onClick={() => doPayment(item)}
+              >
+                Buy
+              </button>
+            </div>
+          );
+        })}
+      </main>
+    </>
+  );
 }
